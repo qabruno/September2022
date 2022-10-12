@@ -1,4 +1,5 @@
-﻿using OpenQA.Selenium;
+﻿using NUnit.Framework;
+using OpenQA.Selenium;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,10 +12,16 @@ namespace September2022.Pages
     {
         public void CreateTM(IWebDriver driver)
         {
-            // Click on "Create New" button
-            IWebElement createNewButton = driver.FindElement(By.XPath("//*[@id='container']/p/a"));
-            createNewButton.Click();
-
+            try
+            {
+                // Click on "Create New" button
+                IWebElement createNewButton = driver.FindElement(By.XPath("//*[@id='container']/p/a"));
+                createNewButton.Click();
+            }
+            catch (Exception ex)
+            {
+                Assert.Fail("Create new button not found.", ex.Message);
+            }
             // Select "Time" from the Typecode dropdown
             IWebElement typeCodeDropdown = driver.FindElement(By.XPath("//*[@id='TimeMaterialEditForm']/div/div[1]/div/span[1]/span/span[2]/span"));
             typeCodeDropdown.Click();
@@ -48,25 +55,107 @@ namespace September2022.Pages
             goToLastPageButton.Click();
 
             IWebElement newCode = driver.FindElement(By.XPath("//*[@id=\"tmsGrid\"]/div[3]/table/tbody/tr[last()]/td[1]"));
+            Assert.That(newCode.Text == "September2022", "Time record hasn't been created.");
 
-
-            if (newCode.Text == "September2022")
-            {
-                Console.WriteLine("Time record created successfully.");
-            }
-            else
-            {
-                Console.WriteLine("Time record hasn't been created.");
-            }
+            //if (newCode.Text == "September2022")
+            //{
+            //    Assert.Pass("Time record created successfully.");
+            //}
+            //else
+            //{
+            //    Assert.Fail("Time record hasn't been created.");
+            //}
         }
 
         public void EditTM(IWebDriver driver)
         {
+            IWebElement editButton = driver.FindElement(By.XPath("//*[@id=\"tmsGrid\"]/div[3]/table/tbody/tr[last()]/td[5]/a[1]"));
+            editButton.Click();
+
+
+
+            //Edit the Typecode
+
+            IWebElement typeCodeDropdown2 = driver.FindElement(By.XPath("//*[@id=\"TimeMaterialEditForm\"]/div/div[1]/div/span[1]/span/span[2]/span"));
+            typeCodeDropdown2.Click();
+            Thread.Sleep(500);
+            IWebElement materialOption = driver.FindElement(By.XPath("//*[@id=\"TypeCode_listbox\"]/li[1]"));
+            materialOption.Click();
+
+
+            //Edit the code
+            IWebElement codeTextBox1 = driver.FindElement(By.Id("Code"));
+            codeTextBox1.Clear();
+            codeTextBox1.SendKeys("editedcode1010");
+
+            //Edit the Description
+
+            IWebElement DescTextbox2 = driver.FindElement(By.Id("Description"));
+            DescTextbox2.Clear();
+            DescTextbox2.SendKeys("Edited /Updated description 1010");
+
+            //Edit the Price 
+
+            IWebElement priceInputTag2 = driver.FindElement(By.XPath("//*[@id=\"TimeMaterialEditForm\"]/div/div[4]/div/span[1]/span/input[1]"));
+            priceInputTag2.Click();
+            IWebElement Price2 = driver.FindElement(By.Id("Price"));
+            Price2.Clear();
+
+            IWebElement priceInputTag3 = driver.FindElement(By.XPath("//*[@id=\"TimeMaterialEditForm\"]/div/div[4]/div/span[1]/span/input[1]"));
+            priceInputTag3.Click();
+            IWebElement Price3 = driver.FindElement(By.Id("Price"));
+            Price3.SendKeys("20");
+
+
+            IWebElement Savebutton2 = driver.FindElement(By.XPath("//*[@id=\"SaveButton\"]"));
+            Savebutton2.Click();
+            Thread.Sleep(2000);
+
+
+            //Validate Edited Record
+
+            //Goto last page and check last record
+
+            IWebElement lastPageButton = driver.FindElement(By.XPath("//*[@id=\"tmsGrid\"]/div[4]/a[4]/span"));
+            lastPageButton.Click();
+
+            IWebElement editedRecord = driver.FindElement(By.XPath("//*[@id=\"tmsGrid\"]/div[3]/table/tbody/tr[last()]/td[1]"));
+
+            if (editedRecord.Text == "editedcode1010")
+            {
+                Console.WriteLine("Record is edited successfully");
+            }
+            else
+            {
+                Console.WriteLine("OOPs can't edit the record");
+            }
 
         }
 
         public void DeleteTM(IWebDriver driver)
         {
+            IWebElement deleteButton = driver.FindElement(By.XPath("//*[@id=\"tmsGrid\"]/div[3]/table/tbody/tr[last()]/td[5]/a[2]"));
+
+
+            deleteButton.Click();
+            Thread.Sleep(500);
+            // Click OK on Alert popup Window 
+
+            driver.SwitchTo().Alert().Accept();
+            Thread.Sleep(2000);
+
+            //VALIDATE DELETE
+            IWebElement deletedRecord = driver.FindElement(By.XPath("//*[@id=\"tmsGrid\"]/div[3]/table/tbody/tr[last()]/td[1]"));
+
+
+            if (deletedRecord.Text != "editedcode1010")
+            {
+                Console.WriteLine("Record has been deleted successfully ");
+            }
+            else
+            {
+                Console.WriteLine("Record hasn't been deleted");
+            }
 
         }
     }

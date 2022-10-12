@@ -1,33 +1,56 @@
-﻿using OpenQA.Selenium;
+﻿using NUnit.Framework;
+using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using September2022.Pages;
+using September2022.Utilities;
 
-// open chrome browser
+namespace September2022.Tests
+{
+    [TestFixture]
+    public class TM_Tests : CommonDriver
+    {
+        [SetUp]
+        public void LoginActions()
+        {
+            // open chrome browser
 
-IWebDriver driver = new ChromeDriver();
+            driver = new ChromeDriver();
 
-// Login page object initialization and definition
-LoginPage loginPageObj = new LoginPage();
-loginPageObj.LoginSteps(driver);
+            // Login page object initialization and definition
+            LoginPage loginPageObj = new LoginPage();
+            loginPageObj.LoginSteps(driver);
 
-// Home page object initialization and definition
-HomePage homePageObj = new HomePage();
-homePageObj.GoToTMPage(driver);
+            // Home page object initialization and definition
+            HomePage homePageObj = new HomePage();
+            homePageObj.GoToTMPage(driver);
+        }
 
-// TM page object initialization and definition
-TMPage tmPageObj = new TMPage();
-tmPageObj.CreateTM(driver);
+        [Test]
+        public void CreateTMTest()
+        {
+            TMPage tmPageObj = new TMPage();
+            tmPageObj.CreateTM(driver);
+        }
 
-// Edit TM
-tmPageObj.EditTM(driver);
+        [Test]
+        public void EditTMTest()
+        {
+            TMPage tmPageObj = new TMPage();
+            tmPageObj.EditTM(driver);
+        }
 
-// Delete TM
-tmPageObj.DeleteTM(driver);
+        [Test]
+        public void DeleteTMTest()
+        {
+            TMPage tmPageObj = new TMPage();
+            tmPageObj.DeleteTM(driver);
+        }
 
+        [TearDown]
+        public void CloseTestRun()
+        {
+            driver.Quit();
+        }
 
-
-
-
-
-
-
+    }
+}
