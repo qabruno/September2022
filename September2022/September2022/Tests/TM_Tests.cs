@@ -7,8 +7,13 @@ using September2022.Utilities;
 namespace September2022.Tests
 {
     [TestFixture]
+    [Parallelizable]
     public class TM_Tests : CommonDriver
     {
+        LoginPage loginPageObj = new LoginPage();
+        HomePage homePageObj = new HomePage();
+        TMPage tmPageObj = new TMPage();
+
         [SetUp]
         public void LoginActions()
         {
@@ -17,32 +22,32 @@ namespace September2022.Tests
             driver = new ChromeDriver();
 
             // Login page object initialization and definition
-            LoginPage loginPageObj = new LoginPage();
+            
             loginPageObj.LoginSteps(driver);
 
             // Home page object initialization and definition
-            HomePage homePageObj = new HomePage();
+            
             homePageObj.GoToTMPage(driver);
         }
 
-        [Test]
+        [Test, Order(1), Description ("This test creates a new TM record")]
         public void CreateTMTest()
         {
-            TMPage tmPageObj = new TMPage();
+            
             tmPageObj.CreateTM(driver);
         }
 
-        [Test]
+        [Test, Order(2), Description ("This test edits the latest TM record created")]
         public void EditTMTest()
         {
-            TMPage tmPageObj = new TMPage();
+            
             tmPageObj.EditTM(driver);
         }
 
-        [Test]
+        [Test, Order(3), Description ("This test deletes the TM record edited on the test above")]
         public void DeleteTMTest()
         {
-            TMPage tmPageObj = new TMPage();
+            
             tmPageObj.DeleteTM(driver);
         }
 

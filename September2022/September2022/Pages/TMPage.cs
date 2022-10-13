@@ -55,24 +55,32 @@ namespace September2022.Pages
             goToLastPageButton.Click();
 
             IWebElement newCode = driver.FindElement(By.XPath("//*[@id=\"tmsGrid\"]/div[3]/table/tbody/tr[last()]/td[1]"));
-            Assert.That(newCode.Text == "September2022", "Time record hasn't been created.");
+            IWebElement newDescription = driver.FindElement(By.XPath("//*[@id=\"tmsGrid\"]/div[3]/table/tbody/tr[last()]/td[3]"));
+            IWebElement newPrice = driver.FindElement(By.XPath("//*[@id=\"tmsGrid\"]/div[3]/table/tbody/tr[last()]/td[4]"));
 
-            //if (newCode.Text == "September2022")
-            //{
-            //    Assert.Pass("Time record created successfully.");
-            //}
-            //else
-            //{
-            //    Assert.Fail("Time record hasn't been created.");
-            //}
+
+            Assert.That(newCode.Text == "September2022", "New code and expected code do not match.");
+            Assert.That(newDescription.Text == "September2022", "New description and expected description do not match.");
+            Assert.That(newPrice.Text == "$12.00", "New price and expected price do not match.");
+
         }
 
         public void EditTM(IWebDriver driver)
         {
-            IWebElement editButton = driver.FindElement(By.XPath("//*[@id=\"tmsGrid\"]/div[3]/table/tbody/tr[last()]/td[5]/a[1]"));
-            editButton.Click();
+            IWebElement goToLastPageButton = driver.FindElement(By.XPath("//*[@id=\"tmsGrid\"]/div[4]/a[4]/span"));
+            goToLastPageButton.Click();
 
+            IWebElement findRecordCreated = driver.FindElement(By.XPath("//*[@id=\"tmsGrid\"]/div[3]/table/tbody/tr[last()]/td[1]"));
 
+            if(findRecordCreated.Text == "September2022")
+            {
+                IWebElement editButton = driver.FindElement(By.XPath("//*[@id=\"tmsGrid\"]/div[3]/table/tbody/tr[last()]/td[5]/a[1]"));
+                editButton.Click();
+            }
+            else
+            {
+                Assert.Fail("Record to be edited hasn't been found. Record not edited");
+            }
 
             //Edit the Typecode
 
@@ -134,11 +142,23 @@ namespace September2022.Pages
 
         public void DeleteTM(IWebDriver driver)
         {
-            IWebElement deleteButton = driver.FindElement(By.XPath("//*[@id=\"tmsGrid\"]/div[3]/table/tbody/tr[last()]/td[5]/a[2]"));
+            IWebElement goToLastPageButton = driver.FindElement(By.XPath("//*[@id=\"tmsGrid\"]/div[4]/a[4]/span"));
+            goToLastPageButton.Click();
+            Thread.Sleep(1000);
 
+            IWebElement findEditedRecord = driver.FindElement(By.XPath("//*[@id=\"tmsGrid\"]/div[3]/table/tbody/tr[last()]/td[1]"));
 
-            deleteButton.Click();
-            Thread.Sleep(500);
+            if (findEditedRecord.Text == "editedcode1010")
+            {
+                IWebElement deleteButton = driver.FindElement(By.XPath("//*[@id=\"tmsGrid\"]/div[3]/table/tbody/tr[last()]/td[5]/a[2]"));
+                deleteButton.Click();
+                Thread.Sleep(500);
+            }
+            else
+            {
+                Assert.Fail("Edited code hasn't been found. Record not deleted");
+            }
+
             // Click OK on Alert popup Window 
 
             driver.SwitchTo().Alert().Accept();
@@ -150,11 +170,11 @@ namespace September2022.Pages
 
             if (deletedRecord.Text != "editedcode1010")
             {
-                Console.WriteLine("Record has been deleted successfully ");
+                Assert.Pass("Record has been deleted successfully ");
             }
             else
             {
-                Console.WriteLine("Record hasn't been deleted");
+                Assert.Fail("Record hasn't been deleted");
             }
 
         }

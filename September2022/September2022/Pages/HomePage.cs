@@ -24,5 +24,10 @@ namespace September2022.Pages
             tmOption.Click();
             Thread.Sleep(1000);
         }
+
+        public void GoToEmployeePage(IWebDriver driver)
+        {
+
+        }
     }
 }
